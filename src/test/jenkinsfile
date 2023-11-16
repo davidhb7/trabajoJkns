@@ -1,0 +1,58 @@
+pipeline {
+    agent any
+
+    environment {
+        MAVEN_HOME = tool 'Maven'
+        PATH = "$MAVEN_HOME/bin:$PATH"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                script {
+                    sh "mvn clean package"
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                script {
+                    sh "mvn test"
+                }
+            }
+        }
+
+        stage('Results') {
+            steps {
+                junit 'target/surefire-reports/*.xml'
+            }
+        }
+    }
+
+    post {
+        always {
+            script {
+                // Cleanup or additional steps to be performed always
+            }
+        }
+        success {
+            script {
+                // Actions to be performed only if the build is successful
+                echo 'Build successful. Running additional tasks...'
+            }
+        }
+        failure {
+            script {
+                // Actions to be performed only if the build fails
+                echo 'Build failed. Sending notification...'
+            }
+        }
+    }
+}
