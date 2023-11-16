@@ -1,9 +1,5 @@
 package org.example;
 
-/**
- * Hello world!
- *
- */
 public class App 
 {
     public int suma(int a, int b){
